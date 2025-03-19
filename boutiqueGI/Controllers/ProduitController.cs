@@ -23,6 +23,33 @@ namespace boutiqueGI.Controllers
         {
             return View();
         }
+        public IActionResult Edit(string id)
+        {
+            memoryCache.TryGetValue("produits", out produits!);
+            var produit = produits.Where(p => p.Id == id).FirstOrDefault();
+
+            return View(produit);
+        }
+        [HttpPost]
+        public IActionResult Edit(Produits param)
+        {
+            if (ModelState.IsValid)
+            {
+                memoryCache.TryGetValue("produits", out produits!);
+                var produit = produits.Where(p => p.Id == param.Id).FirstOrDefault();
+                if (produit != null)
+                {
+                    produit.Name = param.Name;
+                    produit.Price = param.Price;
+                    produit.Qt = param.Qt;
+                    produit.DateExp = param.DateExp;
+                    produit.Remise = param.Remise;
+                }
+                memoryCache.Set("produits", produits);
+                return RedirectToAction(nameof(Index));
+            }
+                return View();
+        }
         
         public IActionResult Delete(string id)
         {
