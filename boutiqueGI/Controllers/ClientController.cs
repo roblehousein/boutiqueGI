@@ -10,7 +10,7 @@ namespace boutiqueGI.Controllers
         {
             return View();
         }
-        private void creation_Produit(Clients client)
+        private void creation_Client(Clients client)
         {
             try
             {
@@ -31,7 +31,7 @@ namespace boutiqueGI.Controllers
                 throw new Exception(ex.Message);
             }
         }
-        private List<Produits> Get_Client()
+        private List<Clients> Get_Client()
         {
             try
             {
@@ -41,10 +41,10 @@ namespace boutiqueGI.Controllers
                     System.IO.File.Create(path).Dispose();
                 }
                 var contant = System.IO.File.ReadAllText(path);
-                var clients = JsonConvert.DeserializeObject<List<Produits>>(contant);
+                var clients = JsonConvert.DeserializeObject<List<Clients>>(contant);
                 if (clients == null)
                 {
-                    clients = new List<Produits>();
+                    clients = new List<Clients>();
                 }
                 return clients;
             }
@@ -53,7 +53,7 @@ namespace boutiqueGI.Controllers
                 throw new Exception(ex.Message);
             }
         }
-        private void Update_Produit(List<Clients> clients)
+        private void Update_Client(List<Clients> clients)
         {
             try
             {
