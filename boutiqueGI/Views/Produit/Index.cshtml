@@ -19,7 +19,7 @@
                 @foreach (var produit in Model)
                 {
                     <tr>
-                        <td>@produit.Name</td>
+                        <td><a asp-action="detail" asp-route-id="@produit.Id"> @produit.Name</a></td>
                         <td>@produit.Price</td>
                         <td>@produit.Qt</td>
                         <td>@produit.DateExp</td>

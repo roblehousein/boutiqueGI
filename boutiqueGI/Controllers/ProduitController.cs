@@ -8,11 +8,10 @@ namespace boutiqueGI.Controllers
 
     public class ProduitController : Controller
     {
-        private readonly IMemoryCache memoryCache;
+
         private List<Produits> produits;
-        public ProduitController(IMemoryCache memoryCache)
+        public ProduitController()
         {
-            this.memoryCache = memoryCache;
             produits = new List<Produits>();
         }
         public IActionResult Index()
@@ -47,7 +46,7 @@ namespace boutiqueGI.Controllers
                     produit.DateExp = param.DateExp;
                     produit.Remise = param.Remise;
                 };
-               Update_Produit(produits);
+                Update_Produit(produits);
                 return RedirectToAction(nameof(Index));
             }
             return View();
@@ -55,7 +54,7 @@ namespace boutiqueGI.Controllers
 
         public IActionResult Delete(string id)
         {
-           var produits = Get_Produit();
+            var produits = Get_Produit();
             var produit = produits.Where(p => p.Id == id).FirstOrDefault();
             if (produit != null)
             {
@@ -63,6 +62,13 @@ namespace boutiqueGI.Controllers
             }
             Update_Produit(produits);
             return RedirectToAction(nameof(Index));
+        }
+        public IActionResult Detail(string id)
+        {
+            var produits = Get_Produit();
+            var produit = produits.Where(p => p.Id == id).FirstOrDefault();
+           
+            return View(produit);
         }
 
         [HttpPost]
