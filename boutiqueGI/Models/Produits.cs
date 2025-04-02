@@ -9,5 +9,6 @@
         public DateTime DateExp { get; set; }
         public DateTime DateCrea { get; set; }
         public decimal Remise { get; set; } = 0;
+        public bool Checked { get; set; } = false;
     }
 }

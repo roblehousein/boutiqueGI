@@ -1,0 +1,26 @@
+﻿<div class="container">
+    <h4 class="d-flex justify-content-between">Liste des clients
+        <a class="btn btn-primary" asp-action="Create" asp-controller="client">Ajouter</a>
+    </h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Telephone</th>
+                <th>Email</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var client in Model)
+            {
+                <tr>
+                    <td>@client.Name</td>
+                    <td>@client.PhoneNumber</td>
+                    <td>@client.Email</td>
+                    <td><a asp-action="delete" asp-controller="client" asp-route-id="@client.Id" class="btn btn-danger">Supprimer</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

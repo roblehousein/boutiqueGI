@@ -8,8 +8,41 @@ namespace boutiqueGI.Controllers
     {
         public IActionResult Index()
         {
+            var clients = Get_Client();
+
+            return View(clients);
+        }
+        public IActionResult Create()
+        {
             return View();
         }
+        [HttpPost]
+        public IActionResult Create(Clients client)
+        {
+            if (ModelState.IsValid)
+            {
+                //definir un Id
+                client.Id = Guid.NewGuid();
+                //Enregistrer le client 
+                creation_Client(client);
+                //retourne vers la page client(index)
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+        }
+
+        public IActionResult Delete(Guid id)
+        {
+            var clients = Get_Client();
+            var client = clients.Where(a => a.Id == id).FirstOrDefault();
+            if (client != null)
+            {
+                clients.Remove(client);
+                Update_Client(clients);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
         private void creation_Client(Clients client)
         {
             try

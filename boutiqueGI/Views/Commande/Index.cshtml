@@ -1,0 +1,33 @@
+﻿@* <h4 class="container text-center text-capitalize d-flex justify-content-between">
+    liste des produits
+    <a asp-controller="Produit" asp-action="Create" class="btn btn-primary">Ajouter</a>
+</h4>
+<div class="container">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Prix</th>
+                <th>Qt</th>
+                <th>Date expiration</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null)
+            {
+                @foreach (var produit in Model)
+                {
+                    <tr>
+                        <td><a asp-action="detail" asp-route-id="@produit.Id"> @produit.Name</a></td>
+                        <td>@produit.Price</td>
+                        <td>@produit.Qt</td>
+                        <td>@produit.DateExp</td>
+                        <td><a asp-action="edit" class="btn btn-primary" asp-route-id="@produit.Id"> Modifier</a></td>
+                        <td><a asp-action="delete" class="btn btn-danger" asp-route-id="@produit.Id"> supprimer</a></td>
+                    </tr>
+                }}
+        </tbody>
+    </table>
+</div>
+ *@
