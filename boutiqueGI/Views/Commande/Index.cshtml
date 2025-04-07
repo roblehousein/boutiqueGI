@@ -1,9 +1,61 @@
-﻿@* <h4 class="container text-center text-capitalize d-flex justify-content-between">
-    liste des produits
-    <a asp-controller="Produit" asp-action="Create" class="btn btn-primary">Ajouter</a>
+﻿@model Commandes
+<h4 class="container text-center text-capitalize d-flex justify-content-between">
+    Passer une commande
+    @* <a asp-controller="Model.Produits[i]" asp-action="Create" class="btn btn-primary">Ajouter</a> *@
 </h4>
+
 <div class="container">
-    <table class="table table-bordered">
+    <form asp-controller="Commande" asp-action="Create">
+
+        <div class="form-group">
+            <label asp-for="ClientName">Sélectionner un client</label>
+            <select asp-for="ClientName"
+                    asp-items="@(new SelectList(Model.Customers, nameof(Clients.Name), nameof(Clients.Name)))">
+                <option>Please select one</option>
+            </select>
+            @*  <select asp-for="Client" asp-items="Model.Customers" class="form-control" aria-label="Select customer">
+            </select> *@
+        </div>
+        <table class="table table-bordered mt-1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Prix</th>
+                    <th>Qt</th>
+                    <th>Date expiration</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    @for (int i = 0; i < Model.Produits!.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" asp-for="@Model.Produits[i].Checked" />
+                                <label asp-for="@Model.Produits[i].Checked">@Model.Produits[i].Name</label>
+                                <input type="hidden" asp-for="@Model.Produits[i].Id" />
+                                <input type="hidden" asp-for="@Model.Produits[i].Name" />
+                                <input type="hidden" asp-for="@Model.Produits[i].Price" />
+                                <input type="hidden" asp-for="@Model.Produits[i].DateCrea" />
+                                <input type="hidden" asp-for="@Model.Produits[i].DateExp" />
+                                <input type="hidden" asp-for="@Model.Produits[i].Qt" />
+                                <input type="hidden" asp-for="@Model.Produits[i].Remise" />
+                            </td>
+                            <td>@Model.Produits[i].Price</td>
+                            <td>@Model.Produits[i].Qt</td>
+                            <td>@Model.Produits[i].DateExp</td>
+                            
+                        </tr>
+                    }}
+            </tbody>
+        </table>
+
+        <input type="submit" />
+
+    </form>
+    @* <table class="table table-bordered">
         <thead>
             <tr>
                 <th>Name</th>
@@ -16,18 +68,18 @@
         <tbody>
             @if (Model != null)
             {
-                @foreach (var produit in Model)
+                @foreach (var Model.Produits[i] in Model)
                 {
                     <tr>
-                        <td><a asp-action="detail" asp-route-id="@produit.Id"> @produit.Name</a></td>
-                        <td>@produit.Price</td>
-                        <td>@produit.Qt</td>
-                        <td>@produit.DateExp</td>
-                        <td><a asp-action="edit" class="btn btn-primary" asp-route-id="@produit.Id"> Modifier</a></td>
-                        <td><a asp-action="delete" class="btn btn-danger" asp-route-id="@produit.Id"> supprimer</a></td>
+                        <td><a asp-action="detail" asp-route-id="@Model.Produits[i].Id"> @Model.Produits[i].Name</a></td>
+                        <td>@Model.Produits[i].Price</td>
+                        <td>@Model.Produits[i].Qt</td>
+                        <td>@Model.Produits[i].DateExp</td>
+                        <td><a asp-action="edit" class="btn btn-primary" asp-route-id="@Model.Produits[i].Id"> Modifier</a></td>
+                        <td><a asp-action="delete" class="btn btn-danger" asp-route-id="@Model.Produits[i].Id"> supprimer</a></td>
                     </tr>
                 }}
         </tbody>
     </table>
-</div>
  *@
+</div>
