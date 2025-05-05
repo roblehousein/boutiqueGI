@@ -1,4 +1,5 @@
-﻿using boutiqueGI.Models;
+﻿using boutiqueGI.Context;
+using boutiqueGI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -45,7 +46,8 @@ namespace boutiqueGI.Controllers
                     produit.Qt = param.Qt;
                     produit.DateExp = param.DateExp;
                     produit.Remise = param.Remise;
-                };
+                }
+                ;
                 Update_Produit(produits);
                 return RedirectToAction(nameof(Index));
             }
@@ -54,20 +56,18 @@ namespace boutiqueGI.Controllers
 
         public IActionResult Delete(string id)
         {
-            var produits = Get_Produit();
-            var produit = produits.Where(p => p.Id == id).FirstOrDefault();
-            if (produit != null)
-            {
-                produits.Remove(produit);
-            }
-            Update_Produit(produits);
+            using var context = new AppDbContext();
+            var p = context.Produits.Where(i=>i.Id == id).FirstOrDefault();
+            if (p != null)
+                context.Produits.Remove(p);
+            context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
         public IActionResult Detail(string id)
         {
             var produits = Get_Produit();
             var produit = produits.Where(p => p.Id == id).FirstOrDefault();
-           
+
             return View(produit);
         }
 
@@ -88,17 +88,9 @@ namespace boutiqueGI.Controllers
         {
             try
             {
-                var path = AppDomain.CurrentDomain.BaseDirectory + "product.json";
-                var contant = System.IO.File.ReadAllText(path);
-                var produits = JsonConvert.DeserializeObject<List<Produits>>(contant);
-                if (produits == null)
-                {
-                    produits = new List<Produits>();
-                }
-                produits.Add(produit);
-                string json = JsonConvert.SerializeObject(produits);
-                System.IO.File.WriteAllText(path, json);
-
+                using var context = new AppDbContext();
+                context.Produits.Add(produit);
+                context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -109,17 +101,8 @@ namespace boutiqueGI.Controllers
         {
             try
             {
-                var path = AppDomain.CurrentDomain.BaseDirectory + "product.json";
-                if (!System.IO.File.Exists(path))
-                {
-                    System.IO.File.Create(path).Dispose();
-                }
-                var contant = System.IO.File.ReadAllText(path);
-                var produits = JsonConvert.DeserializeObject<List<Produits>>(contant);
-                if (produits == null)
-                {
-                    produits = new List<Produits>();
-                }
+                using var context = new AppDbContext();
+                var produits = context.Produits.ToList();
                 return produits;
             }
             catch (Exception ex)

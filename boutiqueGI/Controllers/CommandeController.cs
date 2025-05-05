@@ -8,17 +8,25 @@ namespace boutiqueGI.Controllers
     {
         public IActionResult Index()
         {
-            var commandeData = new Commandes {Customers = Get_Client(), Produits = Get_Produit()};
+            var commandeData = Get_Commande();
+            return View(commandeData.OrderByDescending(d=>d.DateCommande));
+        }
+
+        public IActionResult Create()
+        {
+            var commandeData = new Commandes { Customers = Get_Client(), Produits = Get_Produit() };
             return View(commandeData);
         }
 
+        [HttpPost]
         public IActionResult Create(Commandes commandes)
         {
-            commandes.Panier = commandes.Produits!.Where(e=>e.Checked).ToList();
-            commandes.Total_Price = commandes.Panier.Sum(e=>e.Price);
+            commandes.Panier = commandes.Produits!.Where(e => e.Checked == true).ToList();
+            commandes.Total_Price = commandes.Panier.Sum(e => e.Price);
             commandes.DateCommande = DateTime.Now;
+            commandes.Id = Guid.NewGuid();
             creation_commande(commandes);
-            commandes.Id= Guid.NewGuid();
+
             return RedirectToAction(nameof(Index));
         }
 
