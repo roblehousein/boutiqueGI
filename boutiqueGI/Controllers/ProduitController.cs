@@ -37,18 +37,7 @@ namespace boutiqueGI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var produits = Get_Produit();
-                var produit = produits.Where(p => p.Id == param.Id).FirstOrDefault();
-                if (produit != null)
-                {
-                    produit.Name = param.Name;
-                    produit.Price = param.Price;
-                    produit.Qt = param.Qt;
-                    produit.DateExp = param.DateExp;
-                    produit.Remise = param.Remise;
-                }
-                ;
-                Update_Produit(produits);
+                Update_Produit(param);
                 return RedirectToAction(nameof(Index));
             }
             return View();
@@ -110,13 +99,22 @@ namespace boutiqueGI.Controllers
                 throw new Exception(ex.Message);
             }
         }
-        private void Update_Produit(List<Produits> produits)
+        private void Update_Produit(Produits produits)
         {
             try
             {
-                var path = AppDomain.CurrentDomain.BaseDirectory + "product.json";
-                string json = JsonConvert.SerializeObject(produits);
-                System.IO.File.WriteAllText(path, json);
+                // update le produit using EntityFramework
+                using var context = new AppDbContext();
+                var p = context.Produits.Where(i => i.Id == produits.Id).FirstOrDefault();
+                if (p != null)
+                {
+                    p.Name = produits.Name;
+                    p.Price = produits.Price;
+                    p.Qt = produits.Qt;
+                    p.DateExp = produits.DateExp;
+                    p.Remise = produits.Remise;
+                }
+                context.SaveChanges();
             }
             catch (Exception ex)
             {

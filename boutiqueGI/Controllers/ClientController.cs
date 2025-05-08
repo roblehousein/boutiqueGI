@@ -1,4 +1,5 @@
-﻿using boutiqueGI.Models;
+﻿using boutiqueGI.Context;
+using boutiqueGI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -33,12 +34,12 @@ namespace boutiqueGI.Controllers
 
         public IActionResult Delete(Guid id)
         {
-            var clients = Get_Client();
-            var client = clients.Where(a => a.Id == id).FirstOrDefault();
+            using var context = new AppDbContext();
+            var client = context.Clients.Where(i => i.Id == id).FirstOrDefault();
             if (client != null)
             {
-                clients.Remove(client);
-                Update_Client(clients);
+                context.Clients.Remove(client);
+                context.SaveChanges();
             }
             return RedirectToAction(nameof(Index));
         }
@@ -47,17 +48,9 @@ namespace boutiqueGI.Controllers
         {
             try
             {
-                var path = AppDomain.CurrentDomain.BaseDirectory + "client.json";
-                var contant = System.IO.File.ReadAllText(path);
-                var clients = JsonConvert.DeserializeObject<List<Clients>>(contant);
-                if (clients == null)
-                {
-                    clients = new List<Clients>();
-                }
-                clients.Add(client);
-                string json = JsonConvert.SerializeObject(clients);
-                System.IO.File.WriteAllText(path, json);
-
+                using var context = new AppDbContext();
+                var p = context.Clients.Add(client);
+                context.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -68,17 +61,8 @@ namespace boutiqueGI.Controllers
         {
             try
             {
-                var path = AppDomain.CurrentDomain.BaseDirectory + "client.json";
-                if (!System.IO.File.Exists(path))
-                {
-                    System.IO.File.Create(path).Dispose();
-                }
-                var contant = System.IO.File.ReadAllText(path);
-                var clients = JsonConvert.DeserializeObject<List<Clients>>(contant);
-                if (clients == null)
-                {
-                    clients = new List<Clients>();
-                }
+                using var context = new AppDbContext();
+                var clients = context.Clients.ToList();
                 return clients;
             }
             catch (Exception ex)
@@ -86,18 +70,6 @@ namespace boutiqueGI.Controllers
                 throw new Exception(ex.Message);
             }
         }
-        private void Update_Client(List<Clients> clients)
-        {
-            try
-            {
-                var path = AppDomain.CurrentDomain.BaseDirectory + "client.json";
-                string json = JsonConvert.SerializeObject(clients);
-                System.IO.File.WriteAllText(path, json);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
+        
     }
 }
