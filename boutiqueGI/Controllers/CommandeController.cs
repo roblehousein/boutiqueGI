@@ -1,5 +1,7 @@
-﻿using boutiqueGI.Models;
+﻿using boutiqueGI.Context;
+using boutiqueGI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace boutiqueGI.Controllers
@@ -34,17 +36,8 @@ namespace boutiqueGI.Controllers
         {
             try
             {
-                var path = AppDomain.CurrentDomain.BaseDirectory + "product.json";
-                if (!System.IO.File.Exists(path))
-                {
-                    System.IO.File.Create(path).Dispose();
-                }
-                var contant = System.IO.File.ReadAllText(path);
-                var produits = JsonConvert.DeserializeObject<List<Produits>>(contant);
-                if (produits == null)
-                {
-                    produits = new List<Produits>();
-                }
+                using var context = new AppDbContext();
+                var produits = context.Produits.ToList();
                 return produits;
             }
             catch (Exception ex)
@@ -56,17 +49,8 @@ namespace boutiqueGI.Controllers
         {
             try
             {
-                var path = AppDomain.CurrentDomain.BaseDirectory + "client.json";
-                if (!System.IO.File.Exists(path))
-                {
-                    System.IO.File.Create(path).Dispose();
-                }
-                var contant = System.IO.File.ReadAllText(path);
-                var clients = JsonConvert.DeserializeObject<List<Clients>>(contant);
-                if (clients == null)
-                {
-                    clients = new List<Clients>();
-                }
+                using var context = new AppDbContext();
+                var clients = context.Clients.ToList();
                 return clients;
             }
             catch (Exception ex)
@@ -78,17 +62,12 @@ namespace boutiqueGI.Controllers
         {
             try
             {
-                var path = AppDomain.CurrentDomain.BaseDirectory + "commandes.json";
-                if (!System.IO.File.Exists(path))
-                {
-                    System.IO.File.Create(path).Dispose();
-                }
-                var contant = System.IO.File.ReadAllText(path);
-                var commandes = JsonConvert.DeserializeObject<List<Commandes>>(contant);
-                if (commandes == null)
-                {
-                    commandes = new List<Commandes>();
-                }
+                using var context = new AppDbContext();
+                var commandes = context.Commandes.
+                    Include(c => c.CommandeLines)
+                    .ThenInclude(cl => cl.produit)
+                    .Include(c => c.Client)
+                    .ToList();
                 return commandes;
             }
             catch (Exception ex)
@@ -101,17 +80,19 @@ namespace boutiqueGI.Controllers
         {
             try
             {
-                var path = AppDomain.CurrentDomain.BaseDirectory + "commandes.json";
-                var contant = System.IO.File.ReadAllText(path);
-                var commandes = JsonConvert.DeserializeObject<List<Commandes>>(contant);
-                if (commandes == null)
+                using var context = new AppDbContext();
+                context.Commandes.Add(commande);
+                foreach (var item in commande.Panier)
                 {
-                    commandes = new List<Commandes>();
+                    var commandelie = new CommandeLine
+                    {
+                        Id = Guid.NewGuid(),
+                        CommandesId = commande.Id,
+                        ProduitsId = item.Id!,
+                    };
+                    context.CommandeLines.Add(commandelie);
                 }
-                commandes.Add(commande);
-                string json = JsonConvert.SerializeObject(commandes);
-                System.IO.File.WriteAllText(path, json);
-
+                context.SaveChanges();
             }
             catch (Exception ex)
             {

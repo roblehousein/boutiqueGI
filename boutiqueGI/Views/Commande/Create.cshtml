@@ -9,8 +9,8 @@
 
         <div class="form-group">
             <label asp-for="ClientName">Sélectionner un client</label>
-            <select asp-for="ClientName"
-                    asp-items="@(new SelectList(Model.Customers, nameof(Clients.Name), nameof(Clients.Name)))">
+            <select asp-for="ClientId"
+                    asp-items="@(new SelectList(Model.Customers, nameof(Clients.Id), nameof(Clients.Name)))">
                 <option>Please select one</option>
             </select>
             @*  <select asp-for="Client" asp-items="Model.Customers" class="form-control" aria-label="Select customer">

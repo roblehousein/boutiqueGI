@@ -12,7 +12,8 @@ namespace boutiqueGI.Context
         }
         public DbSet<Models.Produits> Produits { get; set; }
         public DbSet<Models.Clients> Clients { get; set; }
-      //  public DbSet<Models.Commandes> Commandes { get; set; }
+        public DbSet<Models.Commandes> Commandes { get; set; }
+        public DbSet<Models.CommandeLine> CommandeLines { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

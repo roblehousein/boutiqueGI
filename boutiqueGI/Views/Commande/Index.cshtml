@@ -5,8 +5,8 @@
     {
         <h2>Commande N°:@commande.Id</h2>
         <ul>
-            <li>Client : @commande.ClientName</li>
-            <li>Client : @commande.DateCommande</li>
+            <li>Client : @commande.Client.Name</li>
+            <li>Date : @commande.DateCommande</li>
         </ul>
         <p>Produits</p>
         
@@ -18,18 +18,14 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var produit in commande.Panier)
+                @foreach (var line in commande.CommandeLines)
                 {
                     <tr>
-                        <td>@produit.Name</td>
-                        <td>@produit.Price</td>
+                        <td>@line.produit.Name</td>
+                        @* <td>@produit.Price</td> *@
                     </tr>
                 }
             </tbody>
         </table>
-           
-        
-
-
     }
 </div>

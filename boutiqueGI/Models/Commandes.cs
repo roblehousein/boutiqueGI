@@ -1,18 +1,21 @@
-﻿namespace boutiqueGI.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace boutiqueGI.Models
 {
     public class Commandes
     {
         public Guid Id { get; set; }
-        // liste des produits vendus
+        public Guid ClientId { get; set; }
+        [NotMapped]
         public  List<Produits>? Panier { get; set; }
-        // liste des produits en stock
+        [NotMapped]
         public List<Produits>? Produits { get; set; }
-        // liste des clients déjà enregistrer
+        [NotMapped]
         public IEnumerable<Clients>? Customers { get; set; }
         public  Clients? Client { get; set; }
-        //nom du client qui a passé la commande
         public  string? ClientName { get; set; }
         public DateTime DateCommande { get; set; } = DateTime.Now;
         public Decimal Total_Price { get; set; } 
+        public List<CommandeLine>? CommandeLines { get; set; }
     }
 }
